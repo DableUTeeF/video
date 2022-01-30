@@ -272,7 +272,7 @@ class EfficientNet(nn.Module):
                     block_cnf.input_channels = block_cnf.out_channels
                     block_cnf.stride = 1
                 if block_cnf.stride == 2:
-                    current_size /= 2
+                    current_size = current_size // 2
                 # adjust stochastic depth probability based on the depth of the stage block
                 sd_prob = stochastic_depth_prob * float(stage_block_id) / total_stage_blocks
 
