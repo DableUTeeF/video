@@ -139,7 +139,8 @@ for epoch in range(NUM_EPOCHS):
         log['test'].append(loss)
         test_loss += float(loss)
     test_loss /= len(test_loader)
-    torch.save(log, 'log.pth')
+    logs.append(log)
+    torch.save(logs, 'log.pth')
     print('%f, %f' % (train_loss, test_loss))
     
     if test_loss < best_loss:
