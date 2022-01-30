@@ -255,6 +255,10 @@ class EfficientNet(nn.Module):
         # building inverted residual blocks
         total_stage_blocks = sum([cnf.num_layers for cnf in inverted_residual_setting])
         stage_block_id = 0
+        
+        # edit
+        current_size = 112  # because the `ConvNormActivation` at line 250 uses stride=2 so the size is divided by 2 here
+        # /edit
         for cnf in inverted_residual_setting:
             stage: List[nn.Module] = []
             for _ in range(cnf.num_layers):
@@ -265,11 +269,12 @@ class EfficientNet(nn.Module):
                 if stage:
                     block_cnf.input_channels = block_cnf.out_channels
                     block_cnf.stride = 1
-
+                if block_cnf.stride == 2:
+                    current_size /= 2
                 # adjust stochastic depth probability based on the depth of the stage block
                 sd_prob = stochastic_depth_prob * float(stage_block_id) / total_stage_blocks
 
-                stage.append(block(block_cnf, sd_prob, norm_layer))
+                stage.append(block(block_cnf, sd_prob, norm_layer, h=current_size, w=current_size))
                 stage_block_id += 1
 
             layers.append(nn.Sequential(*stage))
