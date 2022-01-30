@@ -50,6 +50,8 @@ class CoordAtt(nn.Module):
 
     self.pool_h = nn.AdaptiveAvgPool2d((h, 1))
     self.pool_w = nn.AdaptiveAvgPool2d((1, w))
+    print((h, 1))
+    print((1, w))
 
     # mip = max(8, channel//reduction)
 
