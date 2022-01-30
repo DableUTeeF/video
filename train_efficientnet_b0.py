@@ -112,9 +112,9 @@ best_loss = 1e9
 best_loss1 = 0.0
 
 optimizer = optim.Adam(model.parameters())
-
+logs = []
 for epoch in range(NUM_EPOCHS):
-
+    log = {'train': [], 'test': []}
     model.train()
     train_loss = 0.0
     for images, labels in iter(train_loader):
@@ -124,6 +124,7 @@ for epoch in range(NUM_EPOCHS):
         outputs = model(images)
         loss = F.mse_loss(outputs, labels)
         train_loss += float(loss)
+        log['train'].append(loss)
         loss.backward()
         optimizer.step()
     train_loss /= len(train_loader)
@@ -135,9 +136,10 @@ for epoch in range(NUM_EPOCHS):
         labels = labels.to(device)
         outputs = model(images)
         loss = F.mse_loss(outputs, labels)
+        log['test'].append(loss)
         test_loss += float(loss)
     test_loss /= len(test_loader)
-
+    torch.save(log, 'log.pth')
     print('%f, %f' % (train_loss, test_loss))
     
     if test_loss < best_loss:
